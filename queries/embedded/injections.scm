@@ -1,2 +1,2 @@
-(content) @html @combined
 (code) @ruby @combined
+(content) @html @combined
