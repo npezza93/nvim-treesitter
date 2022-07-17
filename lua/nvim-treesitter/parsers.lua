@@ -289,7 +289,7 @@ list.graphql = {
 
 list.ruby = {
   install_info = {
-    url = "https://github.com/tree-sitter/tree-sitter-ruby",
+    url = "https://github.com/npezza93/tree-sitter-ruby",
     files = { "src/parser.c", "src/scanner.cc" },
   },
   maintainers = { "@TravonteD" },
