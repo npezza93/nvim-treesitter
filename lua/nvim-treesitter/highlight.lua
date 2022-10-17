@@ -78,6 +78,9 @@ M.default_map = {
   ["repeat"] = "TSRepeat",
 
   ["storageclass"] = "TSStorageClass",
+  ["RubyModelMacro"] = "RubyModelMacro",
+  ["RubyModelCallback"] = "RubyModelCallback",
+  ["RubyModelValidations"] = "RubyModelValidations",
 
   ["string"] = "TSString",
   ["string.regex"] = "TSStringRegex",
