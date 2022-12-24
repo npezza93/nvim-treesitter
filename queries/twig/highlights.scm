@@ -1,4 +1,4 @@
-(comment) @comment
+(comment) @comment @spell
 
 (filter_identifier) @function.call
 (function_identifier) @function.call
@@ -36,25 +36,20 @@
 [
     ","
     "."
+] @punctuation.delimiter
+
+[
     "?"
     ":"
     "="
-] @punctuation.delimiter
+    "|"
+] @operator
 
-(interpolated_string [
-    "#{" 
-    "}"
-] @punctuation.delimiter)
+(interpolated_string ["#{" "}"] @punctuation.special)
 
 [
-    "("
-    ")"
-    "["
-    "]"
-    "{"
+    "(" ")"
+    "[" "]"
 ] @punctuation.bracket
 
-(hash [
-    "}"
-] @punctuation.bracket)
-
+(hash ["{" "}"] @punctuation.bracket)
