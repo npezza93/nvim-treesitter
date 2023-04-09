@@ -2,37 +2,61 @@
 
 [
   "alias"
-  "and"
   "begin"
-  "break"
-  "case"
   "class"
-  "def"
-  "defined?"
   "do"
+  "end"
+  "module"
+  "then"
+ ] @keyword
+
+[
+  "return"
+  "yield"
+ ] @keyword.return
+
+[
+  "and"
+  "in"
+  "not"
+  "or"
+ ] @keyword.operator
+
+[
+  "def"
+  "undef"
+  "defined?"
+ ] @keyword.function
+
+(method
+  "end" @keyword.function)
+
+[
+  "case"
   "else"
   "elsif"
-  "end"
-  "ensure"
-  "for"
   "if"
-  "in"
-  "module"
-  "not"
-  "next"
-  "or"
-  "redo"
-  "rescue"
-  "retry"
-  "return"
-  "then"
-  "undef"
   "unless"
-  "until"
   "when"
+ ] @conditional
+
+(if
+  "end" @conditional)
+
+[
+  "break"
+  "for"
+  "next"
+  "redo"
+  "retry"
+  "until"
   "while"
-  "yield"
- ] @keyword
+ ] @repeat
+
+[
+  "rescue"
+  "ensure"
+ ] @exception
 
 ; Function calls
 
