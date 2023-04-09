@@ -58,20 +58,28 @@
   "ensure"
  ] @exception
 
+((identifier) @exception
+  (#any-of? @exception "fail" "raise"))
+
 ; Function calls
 
 (call method: [(identifier) (constant)] @function)
 
+(program
+ (call
+  (identifier) @include)
+ (#any-of? @include "require" "require_relative" "load"))
+
 ((identifier) @keyword
  (#any-of? @keyword
     "private" "protected" "public" "include" "extend" "prepend"
-    "fail" "raise" "require" "require_relative" "load" "using" "define_method"
+    "using" "define_method"
     "define_singleton_method" "remove_method" "undef_method" "class_eval"
     "instance_eval" "module_eval" "block_given\?" "iterator\?" "alias_method"
     "loop" "attr_reader" "attr_writer" "attr_accessor"))
 
-(call . method: (identifier) @RubyModelMacro
- (#any-of? @keyword
+(call . method: (identifier) @model_macro.ruby
+ (#any-of? @model_macro.ruby
     "belongs_to" "has_many" "has_one" "accepts_nested_attributes_for"
     "attr_readonly" "attribute" "enum" "serialize" "store" "store_accessor"
     "default_scope" "scope" "has_rich_text" "has_secure_password"
@@ -124,8 +132,9 @@
 [
  (self)
  (super)
- (global_variable)
  ] @variable.builtin
+
+(global_variable) @variable.global
 
 (block_parameters (identifier) @parameter)
 (block_parameter  (identifier) @parameter)
