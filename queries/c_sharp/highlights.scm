@@ -75,6 +75,14 @@
 
 (comment) @comment @spell
 
+((comment) @comment.documentation
+  (#lua-match? @comment.documentation "^/[*][*][^*].*[*]/$"))
+
+((comment) @comment.documentation
+  (#lua-match? @comment.documentation "^///[^/]"))
+((comment) @comment.documentation
+  (#lua-match? @comment.documentation "^///$"))
+
 (using_directive
   (identifier) @type)
 
@@ -318,7 +326,6 @@
  "with"
  "new"
  "typeof"
- "nameof"
  "sizeof"
  "is"
  "and"
@@ -338,8 +345,6 @@
  "implicit"
  "explicit"
  "override"
- "async"
- "await"
  "class"
  "delegate"
  "enum"
@@ -358,6 +363,11 @@
  "unchecked"
  "fixed"
 ] @keyword
+
+[
+  "async"
+  "await"
+] @keyword.coroutine
 
 [
  "const"

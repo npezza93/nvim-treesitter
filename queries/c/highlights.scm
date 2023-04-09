@@ -138,6 +138,9 @@
 
 (type_qualifier) @type.qualifier
 
+(linkage_specification
+  "extern" @storageclass)
+
 (type_definition
   declarator: (type_identifier) @type.definition)
 
@@ -172,6 +175,9 @@
   name: (identifier) @function.macro)
 
 (comment) @comment @spell
+
+((comment) @comment.documentation
+  (#lua-match? @comment.documentation "^/[*][*][^*].*[*]/$"))
 
 ;; Parameters
 (parameter_declaration

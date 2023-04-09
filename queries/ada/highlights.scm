@@ -94,20 +94,19 @@
 [
    "exception"
    "raise"
-]  @exception
-(comment)         @comment
-(comment)         @spell       ;; spell-check comments
-(string_literal)  @string
-(string_literal)  @spell       ;; spell-check strings
+] @exception
+(comment) @comment @spell
+(string_literal) @string @spell
 (character_literal) @string
 (numeric_literal) @number
 
 ;; Highlight the name of subprograms
 (procedure_specification name: (_) @function)
 (function_specification name: (_) @function)
-(package_specification name: (_) @function)
+(package_declaration name: (_) @function)
 (package_body name: (_) @function)
 (generic_instantiation name: (_) @function)
+(entry_declaration . (identifier) @function)
 
 ;; Some keywords should take different categories depending on the context
 (use_clause "use"  @include "type" @include)
@@ -171,6 +170,24 @@
 ;       (function_specification)
 ;    ] @function.spec
 ;)
+
+((comment) @comment.documentation
+  . [
+      (entry_declaration)
+      (subprogram_declaration)
+      (parameter_specification)
+    ])
+
+(compilation_unit 
+  . (comment) @comment.documentation)
+
+(component_list
+  (component_declaration)
+    . (comment) @comment.documentation)
+
+(enumeration_type_definition 
+  (identifier)
+  . (comment) @comment.documentation)
 
 ;; Highlight errors in red. This is not very useful in practice, as text will
 ;; be highlighted as user types, and the error could be elsewhere in the code.

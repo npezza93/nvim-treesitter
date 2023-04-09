@@ -143,7 +143,6 @@
 (float) @float
 
 [
- (nil)
  (true)
  (false)
  ] @boolean

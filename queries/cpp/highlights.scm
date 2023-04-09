@@ -15,15 +15,10 @@
     declarator: (_) @parameter)
 
 ;(field_expression) @parameter ;; How to highlight this?
-(template_function
-  name: (identifier) @function)
-
-(template_method
-  name: (field_identifier) @method)
 
 (((field_expression
      (field_identifier) @method)) @_parent
- (#has-parent? @_parent template_method function_declarator call_expression))
+ (#has-parent? @_parent template_method function_declarator))
 
 (field_declaration
   (field_identifier) @field)
@@ -45,12 +40,9 @@
 (namespace_identifier) @namespace
 ((namespace_identifier) @type
                         (#lua-match? @type "^[A-Z]"))
-((namespace_identifier) @constant
-                        (#lua-match? @constant "^[A-Z][A-Z_0-9]*$"))
+
 (case_statement
   value: (qualified_identifier (identifier) @constant))
-(namespace_definition
-  name: (identifier) @namespace)
 
 (using_declaration . "using" . "namespace" . [(qualified_identifier) (identifier)] @namespace)
 
@@ -64,6 +56,12 @@
       declarator: (qualified_identifier
         name: (qualified_identifier
           name: (identifier) @function)))
+(function_declarator
+      declarator: (template_function
+        name: (identifier) @function))
+(function_declarator
+      declarator: (template_method
+        name: (field_identifier) @method))
 ((function_declarator
       declarator: (qualified_identifier
         name: (identifier) @constructor))
@@ -86,10 +84,23 @@
         name: (qualified_identifier
               name: (qualified_identifier
                       name: (identifier) @function.call))))
+(call_expression
+  function: (template_function
+              name: (identifier) @function.call))
+(call_expression
+  function: (qualified_identifier
+              name: (template_function
+                      name: (identifier) @function.call)))
+(call_expression
+  function:
+      (qualified_identifier
+        name: (qualified_identifier
+              name: (template_function
+                      name: (identifier) @function.call))))
 
 (call_expression
   function: (field_expression
-              field: (field_identifier) @function.call))
+              field: (field_identifier) @method.call))
 
 ((call_expression
   function: (identifier) @constructor)
@@ -114,7 +125,7 @@
 ; Constants
 
 (this) @variable.builtin
-(nullptr) @constant
+(nullptr) @constant.builtin
 
 (true) @boolean
 (false) @boolean
@@ -143,10 +154,18 @@
  "template"
  "typename"
  "using"
- "co_await"
  "concept"
  "requires"
 ] @keyword
+
+[
+  "co_await"
+] @keyword.coroutine
+
+[
+ "co_yield"
+ "co_return"
+] @keyword.coroutine.return
 
 [
  "public"
@@ -155,11 +174,6 @@
  "virtual"
  "final"
 ] @type.qualifier
-
-[
- "co_yield"
- "co_return"
-] @keyword.return
 
 [
  "new"
