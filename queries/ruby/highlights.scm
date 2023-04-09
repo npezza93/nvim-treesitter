@@ -70,7 +70,7 @@
     "instance_eval" "module_eval" "block_given\?" "iterator\?" "alias_method"
     "loop" "attr_reader" "attr_writer" "attr_accessor"))
 
-((identifier) @RubyModelMacro
+(call . method: (identifier) @RubyModelMacro
  (#any-of? @keyword
     "belongs_to" "has_many" "has_one" "accepts_nested_attributes_for"
     "attr_readonly" "attribute" "enum" "serialize" "store" "store_accessor"
@@ -78,7 +78,7 @@
     "has_secure_token" "has_one_attached" "has_many_attached" "delegated_type"
     "with_options" "delegate" "delegate_missing_to"))
 
-((identifier) @RubyModelCallback
+(call . method: (identifier) @RubyModelCallback
  (#any-of? @keyword
      "before_validation" "after_validation" "before_create" "before_destroy"
      "before_save" "before_update" "after_create" "after_destroy" "after_save"
@@ -87,7 +87,7 @@
      "after_save_commit" "after_destroy_commit" "after_rollback" "after_find"
      "after_initialize" "after_touch"))
 
-((identifier) @RubyModelValidations
+(call . method: (identifier) @RubyModelValidations
  (#any-of? @keyword
      "validates" "validates_acceptance_of" "validates_associated"
      "validates_confirmation_of" "validates_each" "validates_exclusion_of"
