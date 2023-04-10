@@ -78,7 +78,7 @@
 
 (call . method: (identifier) @RubyModelMacro
  (#any-of? @keyword
-    "belongs_to" "has_many" "has_one" "accepts_nested_attributes_for"
+    "belongs_too" "has_many" "has_one" "accepts_nested_attributes_for"
     "attr_readonly" "attribute" "enum" "serialize" "store" "store_accessor"
     "default_scope" "scope" "has_rich_text" "has_secure_password"
     "has_secure_token" "has_one_attached" "has_many_attached" "delegated_type"
