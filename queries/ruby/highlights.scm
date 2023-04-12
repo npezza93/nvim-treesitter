@@ -181,6 +181,7 @@
 [
  (true)
  (false)
+ (nil)
  ] @boolean
 
 (comment) @comment
