@@ -97,7 +97,7 @@
 (primitive_type) @type.builtin
 
 ((identifier) @type
-  (#match? @type "^(#|_#)"))
+  (#lua-match? @type "^_?#"))
 
 [
   (slice_type)
@@ -158,7 +158,3 @@
 ; Comments
 
 (comment) @comment @spell
-
-; Errors
-
-(ERROR) @error

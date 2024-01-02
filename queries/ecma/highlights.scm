@@ -30,10 +30,49 @@
  (#lua-match? @constant "^_*[A-Z][A-Z%d_]*$"))
 
 ((identifier) @variable.builtin
- (#vim-match? @variable.builtin "^(arguments|module|console|window|document)$"))
+ (#any-of? @variable.builtin
+           "arguments"
+           "module"
+           "console"
+           "window"
+           "document"))
 
-((identifier) @function.builtin
- (#eq? @function.builtin "require"))
+((identifier) @type.builtin
+ (#any-of? @type.builtin
+           "Object"
+           "Function"
+           "Boolean"
+           "Symbol"
+           "Number"
+           "Math"
+           "Date"
+           "String"
+           "RegExp"
+           "Map"
+           "Set"
+           "WeakMap"
+           "WeakSet"
+           "Promise"
+           "Array"
+           "Int8Array"
+           "Uint8Array"
+           "Uint8ClampedArray"
+           "Int16Array"
+           "Uint16Array"
+           "Int32Array"
+           "Uint32Array"
+           "Float32Array"
+           "Float64Array"
+           "ArrayBuffer"
+           "DataView"
+           "Error"
+           "EvalError"
+           "InternalError"
+           "RangeError"
+           "ReferenceError"
+           "SyntaxError"
+           "TypeError"
+           "URIError"))
 
 ; Function and method definitions
 ;--------------------------------
@@ -48,6 +87,9 @@
   name: (identifier) @function)
 (method_definition
   name: [(property_identifier) (private_property_identifier)] @method)
+(method_definition
+  name: (property_identifier) @constructor
+  (#eq? @constructor "constructor"))
 
 (pair
   key: (property_identifier) @method
@@ -89,6 +131,25 @@
   function: (member_expression
     property: [(property_identifier) (private_property_identifier)] @method.call))
 
+; Builtins
+;---------
+
+((identifier) @namespace.builtin
+ (#eq? @namespace.builtin "Intl"))
+
+((identifier) @function.builtin
+ (#any-of? @function.builtin
+           "eval"
+           "isFinite"
+           "isNaN"
+           "parseFloat"
+           "parseInt"
+           "decodeURI"
+           "decodeURIComponent"
+           "encodeURI"
+           "encodeURIComponent"
+           "require"))
+
 ; Constructor
 ;------------
 
@@ -100,6 +161,11 @@
 (namespace_import
   (identifier) @namespace)
 
+; Decorators
+;----------
+(decorator "@" @attribute (identifier) @attribute)
+(decorator "@" @attribute (call_expression (identifier) @attribute))
+
 ; Literals
 ;---------
 
@@ -107,6 +173,9 @@
   (this)
   (super)
 ] @variable.builtin
+
+((identifier) @variable.builtin
+ (#eq? @variable.builtin "self"))
 
 [
   (true)
@@ -125,10 +194,14 @@
 
 (hash_bang_line) @preproc
 
-(string) @string @spell
+((string_fragment) @preproc
+ (#eq? @preproc "use strict"))
+
+(string) @string
 (template_string) @string
 (escape_sequence) @string.escape
 (regex_pattern) @string.regex
+(regex_flags) @character.special
 (regex "/" @punctuation.bracket) ; Regex delimiters
 
 (number) @number
@@ -138,14 +211,14 @@
 ; Punctuation
 ;------------
 
-"..." @punctuation.special
-
 ";" @punctuation.delimiter
 "." @punctuation.delimiter
 "," @punctuation.delimiter
 
 (pair ":" @punctuation.delimiter)
 (pair_pattern ":" @punctuation.delimiter)
+(switch_case ":" @punctuation.delimiter)
+(switch_default ":" @punctuation.delimiter)
 
 [
   "--"
@@ -189,12 +262,13 @@
   "&&="
   "||="
   "??="
+  "..."
 ] @operator
 
 (binary_expression "/" @operator)
 (ternary_expression ["?" ":"] @conditional.ternary)
 (unary_expression ["!" "~" "-" "+"] @operator)
-(unary_expression ["delete" "void" "typeof"] @keyword.operator)
+(unary_expression ["delete" "void"] @keyword.operator)
 
 [
   "("
@@ -243,13 +317,10 @@
   "export"
   "extends"
   "get"
-  "in"
-  "instanceof"
   "let"
   "set"
   "static"
   "target"
-  "typeof"
   "var"
   "with"
 ] @keyword
@@ -271,6 +342,9 @@
 [
   "new"
   "delete"
+  "in"
+  "instanceof"
+  "typeof"
 ] @keyword.operator
 
 [

@@ -2,6 +2,7 @@
   "require"
   "replace"
   "go"
+  "toolchain"
   "exclude"
   "retract"
   "module"
@@ -9,7 +10,7 @@
 
 "=>" @operator
 
-(comment) @comment
+(comment) @comment @spell
 (module_path) @text.uri
 
 [

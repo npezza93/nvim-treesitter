@@ -83,6 +83,7 @@
   "delcommand"
   "comclear"
   "colorscheme"
+  "scriptencoding"
   "startinsert"
   "stopinsert"
   "global"
@@ -106,6 +107,7 @@
   "visual"
   "view"
   "eval"
+  "sign"
 ] @keyword
 (map_statement cmd: _ @keyword)
 (command_name) @function.macro
@@ -193,6 +195,10 @@
 
 (colorscheme_statement (name) @string)
 
+;; Scriptencoding command
+
+(scriptencoding_statement (encoding) @string.special)
+
 ;; Literals
 
 (string_literal) @string
@@ -275,7 +281,7 @@
 
 ; Options
 ((set_value) @number
- (#match? @number "^[0-9]+(\.[0-9]+)?$"))
+ (#lua-match? @number "^[%d]+(%.[%d]+)?$"))
 
 (inv_option "!" @operator)
 (set_item "?" @operator)

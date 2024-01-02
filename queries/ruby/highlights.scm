@@ -129,7 +129,7 @@
  (#lua-match? @variable.builtin "^__(callee|dir|id|method|send|ENCODING|FILE|LINE)__$"))
 
 ((constant) @type
- (#lua-match? @type "^[A-Z\\d_]+$"))
+ (#not-lua-match? @type "^[A-Z0-9_]+$"))
 
 (constant) @constructor
 [
@@ -184,7 +184,23 @@
  (nil)
  ] @boolean
 
-(comment) @comment
+(comment) @comment @spell
+
+(program
+  (comment)+ @comment.documentation
+  (class))
+
+(module
+  (comment)+ @comment.documentation
+  (body_statement (class)))
+
+(class
+  (comment)+ @comment.documentation
+  (body_statement (method)))
+
+(body_statement
+  (comment)+ @comment.documentation
+  (method))
 
 ; Operators
 

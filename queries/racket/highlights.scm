@@ -6,8 +6,6 @@
 ;;                         Basic highlights                         ;;
 ;;------------------------------------------------------------------;;
 
-(ERROR) @error
-
 ;; basic ;;
 
 (number) @number
@@ -20,7 +18,6 @@
 [(string)
  (here_string)
  (byte_string)] @string
-(string) @spell
 
 (escape_sequence) @string.escape
 
@@ -40,7 +37,7 @@
 (symbol) @variable
 
 ((symbol) @comment
- (#match? @comment "^#[cC][iIsS]$"))
+ (#lua-match? @comment "^#[cC][iIsS]$"))
 
 ;; extension ;;
 

@@ -1,7 +1,7 @@
 ; inherits: c
 
 ((identifier) @field
- (#match? @field "(^_|^m_|_$)"))
+  (#lua-match? @field "^m_.*$"))
 
 (parameter_declaration
   declarator: (reference_declarator) @parameter)
@@ -39,7 +39,7 @@
 
 (namespace_identifier) @namespace
 ((namespace_identifier) @type
-                        (#lua-match? @type "^[A-Z]"))
+  (#lua-match? @type "^[%u]"))
 
 (case_statement
   value: (qualified_identifier (identifier) @constant))
@@ -49,83 +49,118 @@
 (destructor_name
   (identifier) @method)
 
+; functions
 (function_declarator
-      declarator: (qualified_identifier
-        name: (identifier) @function))
+  (qualified_identifier
+    (identifier) @function))
 (function_declarator
-      declarator: (qualified_identifier
-        name: (qualified_identifier
-          name: (identifier) @function)))
+  (qualified_identifier
+    (qualified_identifier
+      (identifier) @function)))
 (function_declarator
-      declarator: (template_function
-        name: (identifier) @function))
+  (qualified_identifier
+    (qualified_identifier
+      (qualified_identifier
+        (identifier) @function))))
+((qualified_identifier
+  (qualified_identifier
+    (qualified_identifier
+      (qualified_identifier
+        (identifier) @function)))) @_parent
+  (#has-ancestor? @_parent function_declarator))
+
 (function_declarator
-      declarator: (template_method
-        name: (field_identifier) @method))
-((function_declarator
-      declarator: (qualified_identifier
-        name: (identifier) @constructor))
- (#lua-match? @constructor "^[A-Z]"))
+  (template_function
+    (identifier) @function))
 
 (operator_name) @function
 "operator" @function
 "static_assert" @function.builtin
 
 (call_expression
-  function: (qualified_identifier
-              name: (identifier) @function.call))
+  (qualified_identifier
+    (identifier) @function.call))
 (call_expression
-  function: (qualified_identifier
-              name: (qualified_identifier
-                      name: (identifier) @function.call)))
+  (qualified_identifier
+    (qualified_identifier
+      (identifier) @function.call)))
 (call_expression
-  function:
+  (qualified_identifier
+    (qualified_identifier
       (qualified_identifier
-        name: (qualified_identifier
-              name: (qualified_identifier
-                      name: (identifier) @function.call))))
-(call_expression
-  function: (template_function
-              name: (identifier) @function.call))
-(call_expression
-  function: (qualified_identifier
-              name: (template_function
-                      name: (identifier) @function.call)))
-(call_expression
-  function:
+        (identifier) @function.call))))
+((qualified_identifier
+  (qualified_identifier
+    (qualified_identifier
       (qualified_identifier
-        name: (qualified_identifier
-              name: (template_function
-                      name: (identifier) @function.call))))
+        (identifier) @function.call)))) @_parent
+  (#has-ancestor? @_parent call_expression))
 
 (call_expression
-  function: (field_expression
-              field: (field_identifier) @method.call))
+  (template_function
+    (identifier) @function.call))
+(call_expression
+  (qualified_identifier
+    (template_function
+      (identifier) @function.call)))
+(call_expression
+  (qualified_identifier
+    (qualified_identifier
+      (template_function
+        (identifier) @function.call))))
+(call_expression
+  (qualified_identifier
+    (qualified_identifier
+      (qualified_identifier
+        (template_function
+          (identifier) @function.call)))))
+((qualified_identifier
+  (qualified_identifier
+    (qualified_identifier
+      (qualified_identifier
+        (template_function
+          (identifier) @function.call))))) @_parent
+  (#has-ancestor? @_parent call_expression))
+
+; methods
+(function_declarator
+  (template_method
+    (field_identifier) @method))
+(call_expression
+  (field_expression
+    (field_identifier) @method.call))
+
+; constructors
+
+((function_declarator
+  (qualified_identifier
+    (identifier) @constructor))
+  (#lua-match? @constructor "^%u"))
 
 ((call_expression
   function: (identifier) @constructor)
-(#lua-match? @constructor "^[A-Z]"))
+(#lua-match? @constructor "^%u"))
 ((call_expression
   function: (qualified_identifier
               name: (identifier) @constructor))
-(#lua-match? @constructor "^[A-Z]"))
+(#lua-match? @constructor "^%u"))
 
 ((call_expression
   function: (field_expression
               field: (field_identifier) @constructor))
-(#lua-match? @constructor "^[A-Z]"))
+(#lua-match? @constructor "^%u"))
 
 ;; constructing a type in an initializer list: Constructor ():  **SuperType (1)**
 ((field_initializer
   (field_identifier) @constructor
   (argument_list))
- (#lua-match? @constructor "^[A-Z]"))
+ (#lua-match? @constructor "^%u"))
 
 
 ; Constants
 
 (this) @variable.builtin
-(nullptr) @constant.builtin
+(null "nullptr" @constant.builtin)
 
 (true) @boolean
 (false) @boolean
@@ -156,6 +191,7 @@
  "using"
  "concept"
  "requires"
+ "constexpr"
 ] @keyword
 
 [
@@ -197,6 +233,9 @@
 "::" @punctuation.delimiter
 
 (template_argument_list
+  ["<" ">"] @punctuation.bracket)
+
+(template_parameter_list
   ["<" ">"] @punctuation.bracket)
 
 (literal_suffix) @operator

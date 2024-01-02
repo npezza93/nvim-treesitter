@@ -13,7 +13,7 @@
 (comment) @comment @spell
 
 ((program . (comment) @preproc)
-  (#match? @preproc "^#!/"))
+  (#lua-match? @preproc "^#!/"))
 
 (identifier) @variable
 
@@ -139,6 +139,3 @@
 
 (call
   function: ((dollar _ (identifier) @method.call)))
-
-; Error
-(ERROR) @error

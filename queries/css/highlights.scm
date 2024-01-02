@@ -34,11 +34,14 @@
  "~="
  "$="
  "*="
+ ] @operator
+
+[
  "and"
  "or"
  "not"
  "only"
- ] @operator
+ ] @keyword.operator
 
 (important) @type.qualifier
 
@@ -57,9 +60,9 @@
 (namespace_name) @namespace
 
 ((property_name) @type.definition
-                 (#match? @type.definition "^--"))
+  (#lua-match? @type.definition "^[-][-]"))
 ((plain_value) @type
-               (#match? @type "^--"))
+  (#lua-match? @type "^[-][-]"))
 
 [
  (string_value)
@@ -87,5 +90,3 @@
  "("
  "}"
  ] @punctuation.bracket
-
-(ERROR) @error

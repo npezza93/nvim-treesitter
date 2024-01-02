@@ -27,27 +27,11 @@
            "credits"
            "license"))
 
+"_" @constant.builtin ; match wildcard
+
 ((attribute
     attribute: (identifier) @field)
- (#match? @field "^([A-Z])@!.*$"))
-
-((identifier) @type.builtin
- (#any-of? @type.builtin
-              ;; https://docs.python.org/3/library/exceptions.html
-              "BaseException" "Exception" "ArithmeticError" "BufferError" "LookupError" "AssertionError" "AttributeError"
-              "EOFError" "FloatingPointError" "GeneratorExit" "ImportError" "ModuleNotFoundError" "IndexError" "KeyError"
-              "KeyboardInterrupt" "MemoryError" "NameError" "NotImplementedError" "OSError" "OverflowError" "RecursionError"
-              "ReferenceError" "RuntimeError" "StopIteration" "StopAsyncIteration" "SyntaxError" "IndentationError" "TabError"
-              "SystemError" "SystemExit" "TypeError" "UnboundLocalError" "UnicodeError" "UnicodeEncodeError" "UnicodeDecodeError"
-              "UnicodeTranslateError" "ValueError" "ZeroDivisionError" "EnvironmentError" "IOError" "WindowsError"
-              "BlockingIOError" "ChildProcessError" "ConnectionError" "BrokenPipeError" "ConnectionAbortedError"
-              "ConnectionRefusedError" "ConnectionResetError" "FileExistsError" "FileNotFoundError" "InterruptedError"
-              "IsADirectoryError" "NotADirectoryError" "PermissionError" "ProcessLookupError" "TimeoutError" "Warning"
-              "UserWarning" "DeprecationWarning" "PendingDeprecationWarning" "SyntaxWarning" "RuntimeWarning"
-              "FutureWarning" "ImportWarning" "UnicodeWarning" "BytesWarning" "ResourceWarning"
-              ;; https://docs.python.org/3/library/stdtypes.html
-              "bool" "int" "float" "complex" "list" "tuple" "range" "str"
-              "bytes" "bytearray" "memoryview" "set" "frozenset" "dict" "type" "object"))
+ (#lua-match? @field "^[%l_].*$"))
 
 ((assignment
   left: (identifier) @type.definition
@@ -71,12 +55,12 @@
 
 ((call
    function: (identifier) @constructor)
- (#lua-match? @constructor "^[A-Z]"))
+ (#lua-match? @constructor "^%u"))
 
 ((call
   function: (attribute
               attribute: (identifier) @constructor))
- (#lua-match? @constructor "^[A-Z]"))
+ (#lua-match? @constructor "^%u"))
 
 ;; Decorators
 
@@ -145,13 +129,19 @@
 (typed_parameter
   (identifier) @parameter)
 (typed_default_parameter
-  (identifier) @parameter)
+  name: (identifier) @parameter)
 ; Variadic parameters *args, **kwargs
 (parameters
   (list_splat_pattern ; *args
     (identifier) @parameter))
 (parameters
   (dictionary_splat_pattern ; **kwargs
+    (identifier) @parameter))
+(lambda_parameters
+  (list_splat_pattern
+    (identifier) @parameter))
+(lambda_parameters
+  (dictionary_splat_pattern
     (identifier) @parameter))
 
 
@@ -170,10 +160,13 @@
 (comment) @comment @spell
 
 ((module . (comment) @preproc)
-  (#match? @preproc "^#!/"))
+  (#lua-match? @preproc "^#!/"))
 
 (string) @string
-(escape_sequence) @string.escape
+[
+  (escape_sequence)
+  (escape_interpolation)
+] @string.escape
 
 ; doc-strings
 
@@ -259,6 +252,7 @@
   "print"
   "with"
   "as"
+  "type"
 ] @keyword
 
 [
@@ -304,6 +298,8 @@
   "{" @punctuation.special
   "}" @punctuation.special)
 
+(type_conversion) @function.macro
+
 ["," "." ":" ";" (ellipsis)] @punctuation.delimiter
 
 ;; Class definitions
@@ -324,14 +320,14 @@
           (expression_statement
             (assignment
               left: (identifier) @field))))
- (#match? @field "^([A-Z])@!.*$"))
+ (#lua-match? @field "^%l.*$"))
 ((class_definition
   body: (block
           (expression_statement
             (assignment
               left: (_
                      (identifier) @field)))))
- (#match? @field "^([A-Z])@!.*$"))
+ (#lua-match? @field "^%l.*$"))
 
 ((class_definition
   (block
@@ -339,5 +335,28 @@
       name: (identifier) @constructor)))
  (#any-of? @constructor "__new__" "__init__"))
 
-;; Error
-(ERROR) @error
+((identifier) @type.builtin
+ (#any-of? @type.builtin
+              ;; https://docs.python.org/3/library/exceptions.html
+              "BaseException" "Exception" "ArithmeticError" "BufferError" "LookupError" "AssertionError" "AttributeError"
+              "EOFError" "FloatingPointError" "GeneratorExit" "ImportError" "ModuleNotFoundError" "IndexError" "KeyError"
+              "KeyboardInterrupt" "MemoryError" "NameError" "NotImplementedError" "OSError" "OverflowError" "RecursionError"
+              "ReferenceError" "RuntimeError" "StopIteration" "StopAsyncIteration" "SyntaxError" "IndentationError" "TabError"
+              "SystemError" "SystemExit" "TypeError" "UnboundLocalError" "UnicodeError" "UnicodeEncodeError" "UnicodeDecodeError"
+              "UnicodeTranslateError" "ValueError" "ZeroDivisionError" "EnvironmentError" "IOError" "WindowsError"
+              "BlockingIOError" "ChildProcessError" "ConnectionError" "BrokenPipeError" "ConnectionAbortedError"
+              "ConnectionRefusedError" "ConnectionResetError" "FileExistsError" "FileNotFoundError" "InterruptedError"
+              "IsADirectoryError" "NotADirectoryError" "PermissionError" "ProcessLookupError" "TimeoutError" "Warning"
+              "UserWarning" "DeprecationWarning" "PendingDeprecationWarning" "SyntaxWarning" "RuntimeWarning"
+              "FutureWarning" "ImportWarning" "UnicodeWarning" "BytesWarning" "ResourceWarning"
+              ;; https://docs.python.org/3/library/stdtypes.html
+              "bool" "int" "float" "complex" "list" "tuple" "range" "str"
+              "bytes" "bytearray" "memoryview" "set" "frozenset" "dict" "type" "object"))
+
+;; Regex from the `re` module
+
+(call
+  function: (attribute
+              object: (identifier) @_re)
+  arguments: (argument_list . (string (string_content) @string.regex))
+  (#eq? @_re "re"))

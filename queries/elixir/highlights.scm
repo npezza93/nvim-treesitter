@@ -19,20 +19,17 @@
   "%"
 ] @punctuation.special
 
-; Parser Errors
-(ERROR) @error
-
 ; Identifiers
 (identifier) @variable
 
 ; Unused Identifiers
-((identifier) @comment (#match? @comment "^_"))
+((identifier) @comment (#lua-match? @comment "^_"))
 
 ; Comments
 (comment) @comment @spell
 
 ; Strings
-(string) @string @spell
+(string) @string
 
 ; Modules
 (alias) @type
@@ -112,6 +109,7 @@
   ))
   (arguments [
     (call (identifier) @function)
+    (identifier) @function
     (binary_operator left: (call target: (identifier) @function) operator: "when")])?)
 
 ; Kernel Keywords & Special Forms
