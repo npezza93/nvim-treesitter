@@ -1,6 +1,46 @@
-[(addition) (new_file)] @text.diff.add
-[(deletion) (old_file)] @text.diff.delete
+[
+  (addition)
+  (new_file)
+] @diff.plus
+
+[
+  (deletion)
+  (old_file)
+] @diff.minus
 
 (commit) @constant
+
 (location) @attribute
-(command) @function
+
+(command
+  "diff" @function
+  (argument) @variable.parameter)
+
+(filename) @string.special.path
+
+(mode) @number
+
+[
+  ".."
+  "+"
+  "++"
+  "+++"
+  "++++"
+  "-"
+  "--"
+  "---"
+  "----"
+] @punctuation.special
+
+[
+  (binary_change)
+  (similarity)
+  (file_change)
+] @label
+
+(index
+  "index" @keyword)
+
+(similarity
+  (score) @number
+  "%" @number)

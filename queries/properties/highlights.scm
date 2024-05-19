@@ -4,25 +4,47 @@
 
 (value) @string
 
-(value (escape) @string.escape)
+(value
+  (escape) @string.escape)
 
 ((value) @boolean
- (#any-of? @boolean "true" "false"))
+  (#any-of? @boolean "true" "false"))
 
 ((value) @number
- (#lua-match? @number "^%d+$"))
+  (#lua-match? @number "^%d+$"))
 
-(index) @number
+((index) @number
+  (#lua-match? @number "^%d+$"))
 
-(property [ "=" ":" ] @operator)
+((substitution
+  (key) @constant)
+  (#lua-match? @constant "^[A-Z_][A-Z0-9_]*$"))
 
-[ "${" "}" ] @punctuation.special
+(substitution
+  (key) @function
+  "::" @punctuation.special
+  (secret) @constant.macro)
 
-(substitution ":" @punctuation.special)
+(property
+  [
+    "="
+    ":"
+  ] @operator)
 
-[ "[" "]" ] @punctuation.bracket
+[
+  "${"
+  "}"
+] @punctuation.special
 
-[ "." "\\" ] @punctuation.delimiter
+(substitution
+  ":" @punctuation.special)
 
-((substitution (key) @constant)
- (#lua-match? @constant "^[A-Z_][A-Z0-9_]*$"))
+[
+  "["
+  "]"
+] @punctuation.bracket
+
+[
+  "."
+  "\\"
+] @punctuation.delimiter

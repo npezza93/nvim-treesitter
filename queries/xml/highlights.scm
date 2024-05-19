@@ -1,53 +1,66 @@
 ; inherits: dtd
 
-;; XML declaration
+; XML declaration
+(XMLDecl
+  "standalone" @tag.attribute)
 
-(XMLDecl "standalone" @tag.attribute)
+(XMLDecl
+  [
+    "yes"
+    "no"
+  ] @boolean)
 
-(XMLDecl [ "yes" "no" ] @boolean)
+; Processing instructions
+(XmlModelPI
+  "xml-model" @keyword.directive)
 
-;; Processing instructions
+(StyleSheetPI
+  "xml-stylesheet" @keyword.directive)
 
-(XmlModelPI "xml-model" @preproc)
+(PseudoAtt
+  (Name) @tag.attribute)
 
-(StyleSheetPI "xml-stylesheet" @preproc)
+(PseudoAtt
+  (PseudoAttValue) @string)
 
-(PseudoAtt (Name) @tag.attribute)
+; Doctype declaration
+(doctypedecl
+  "DOCTYPE" @keyword.directive.define)
 
-(PseudoAtt (PseudoAttValue) @string)
+(doctypedecl
+  (Name) @type.definition)
 
-;; Doctype declaration
+; Tags
+(STag
+  (Name) @tag)
 
-(doctypedecl "DOCTYPE" @define)
+(ETag
+  (Name) @tag)
 
-(doctypedecl (Name) @type.definition)
+(EmptyElemTag
+  (Name) @tag)
 
-;; Tags
+; Attributes
+(Attribute
+  (Name) @tag.attribute)
 
-(STag (Name) @tag)
+(Attribute
+  (AttValue) @string)
 
-(ETag (Name) @tag)
-
-(EmptyElemTag (Name) @tag)
-
-;; Attributes
-
-(Attribute (Name) @tag.attribute)
-
-(Attribute (AttValue) @string)
-
-;; Text
-
-(CharData) @text @spell
+; Text
+(CharData) @none @spell
 
 ((CDSect
-  (CDStart) @text.environment
-  (CData) @text.literal
-  "]]>" @text.environment)
- (#set! "priority" 105))
+  (CDStart) @module
+  (CData) @markup.raw
+  "]]>" @module)
+  (#set! "priority" 105))
 
-;; Delimiters & punctuation
-
-[ "<" "</" "/>" ] @tag.delimiter
+; Delimiters & punctuation
+[
+  "<"
+  "</"
+  "/>"
+] @tag.delimiter
 
 "]" @punctuation.bracket

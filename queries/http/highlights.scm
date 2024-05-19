@@ -1,56 +1,62 @@
 ; Keywords
-
-(scheme) @keyword
+(scheme) @module
 
 ; Methods
+(method) @function.method
 
-(method) @method
-
-; Constants
-
-(const_spec) @constant
+; Headers
+(header
+  name: (name) @constant)
 
 ; Variables
-
-(identifier) @variable
+(variable_declaration
+  name: (identifier) @variable)
 
 ; Fields
+(pair
+  name: (identifier) @variable.member)
 
-(pair name: (identifier) @field)
+; URL / Host
+(host) @string.special.url
+
+(path
+  (identifier) @string.special.url)
 
 ; Parameters
-
-(query_param (key) @parameter)
+(query_param
+  (key) @variable.parameter)
 
 ; Operators
-
 [
   "="
   "?"
   "&"
   "@"
+  "<"
 ] @operator
 
 ; Literals
+(target_url) @string.special.url
+
+(http_version) @constant
 
 (string) @string
 
-(target_url) @string @text.uri
-
 (number) @number
 
-; (boolean) @boolean
-
-(null) @constant.builtin
+(boolean) @boolean
 
 ; Punctuation
-
-[ "{{" "}}" ] @punctuation.bracket
-
 [
-  ":"
-] @punctuation.delimiter
+  "{{"
+  "}}"
+] @punctuation.bracket
+
+":" @punctuation.delimiter
+
+; external JSON body
+(external_body
+  file_path: (path) @string.special.path)
 
 ; Comments
-
 (comment) @comment @spell

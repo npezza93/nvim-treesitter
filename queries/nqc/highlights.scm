@@ -5,9 +5,7 @@
   "sub"
 ] @keyword.function
 
-[
-  "until"
-] @repeat
+"until" @keyword.repeat
 
 [
   "acquire"

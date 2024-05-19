@@ -11,20 +11,25 @@
   "]"
   "{"
   "}"
-]  @punctuation.bracket
+] @punctuation.bracket
 
 (comment) @comment @spell
-(doc_comment) @comment.documentation @spell
 
-"method" @keyword.function
+(doc_comment) @comment.documentation @spell
 
 [
   "service"
   "errors"
-  "data"
+] @keyword
+
+"method" @keyword.function
+
+[
   "enum"
-  "extern"
-] @type.builtin
+  "data"
+] @keyword.type
+
+"extern" @keyword.modifier
 
 (type) @type.builtin
 
@@ -32,7 +37,7 @@
   service_name: (identifier) @type)
 
 (error_set
-  (identifier) @property)
+  (identifier) @variable.member)
 
 (error_set
   name: (identifier) @type)
@@ -69,13 +74,14 @@
 ] @attribute.builtin
 
 (parameter
-  name: (identifier) @property)
+  name: (identifier) @variable.parameter)
 
 (field
-  name: (identifier) @variable)
+  name: (identifier) @variable.member)
 
 (method
-  name: (identifier) @method)
+  name: (identifier) @function.method)
 
 (number_literal) @number
+
 (string_literal) @string
