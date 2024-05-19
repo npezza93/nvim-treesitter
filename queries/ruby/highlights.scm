@@ -1,3 +1,5 @@
+(identifier) @variable
+
 ; Keywords
 
 [
@@ -38,10 +40,10 @@
   "if"
   "unless"
   "when"
- ] @conditional
+ ] @keyword.conditional
 
 (if
-  "end" @conditional)
+  "end" @keyword.conditional)
 
 [
   "break"
@@ -51,15 +53,15 @@
   "retry"
   "until"
   "while"
- ] @repeat
+ ] @keyword.repeat
 
 [
   "rescue"
   "ensure"
- ] @exception
+ ] @keyword.exception
 
-((identifier) @exception
-  (#any-of? @exception "fail" "raise"))
+((identifier) @keyword.exception
+  (#any-of? @keyword.exception "fail" "raise"))
 
 ; Function calls
 
@@ -67,8 +69,8 @@
 
 (program
  (call
-  (identifier) @include)
- (#any-of? @include "require" "require_relative" "load"))
+  (identifier) @keyword.import)
+ (#any-of? @keyword.import "require" "require_relative" "load"))
 
 ((identifier) @view_helper.ruby
  (#any-of? @view_helper.ruby "turbo_frame_tag" "content_for" "link_to" "form_for" "form_with"))
@@ -126,7 +128,8 @@
  ] @label
 
 ((identifier) @variable.builtin
- (#lua-match? @variable.builtin "^__(callee|dir|id|method|send|ENCODING|FILE|LINE)__$"))
+ (#any-of? @variable.builtin
+    "__callee__" "__dir__" "__id__" "__method__" "__send__" "__ENCODING__" "__FILE__" "__LINE__"))
 
 ((constant) @type
  (#not-lua-match? @type "^[A-Z0-9_]+$"))
