@@ -10,6 +10,8 @@
   "end"
   "module"
   "then"
+  "BEGIN"
+  "END"
  ] @keyword
 
 [
@@ -67,21 +69,26 @@
 
 (call method: [(identifier) (constant)] @function)
 
-(program
- (call
-  (identifier) @keyword.import)
- (#any-of? @keyword.import "require" "require_relative" "load"))
+((call
+  !receiver
+  method: (identifier) @keyword.import)
+  (#any-of? @keyword.import "require" "require_relative" "load" "autoload"))
 
 ((identifier) @view_helper.ruby
  (#any-of? @view_helper.ruby "turbo_frame_tag" "content_for" "link_to" "form_for" "form_with"))
 
 ((identifier) @keyword
  (#any-of? @keyword
-    "private" "protected" "public" "include" "extend" "prepend"
-    "using" "define_method"
+    "private" "protected" "public" "abort"
+    "using" "define_method" "module_function" "proc" "lambda" "caller" "callcc"
     "define_singleton_method" "remove_method" "undef_method" "class_eval"
     "instance_eval" "module_eval" "block_given\?" "iterator\?" "alias_method"
-    "loop" "attr_reader" "attr_writer" "attr_accessor"))
+    "loop" "attr_reader" "attr_writer" "attr_accessor" "exit" "at_exit" "fork"))
+
+((call
+  !receiver
+  method: (identifier) @keyword)
+  (#any-of? @keyword "include" "extend" "prepend" "refine" "using"))
 
 (call . method: (identifier) @model_macro.ruby
  (#any-of? @model_macro.ruby
@@ -189,6 +196,11 @@
 
 (comment) @comment @spell
 
+((program
+  .
+  (comment) @keyword.directive @nospell)
+  (#lua-match? @keyword.directive "^#!/"))
+
 (program
   (comment)+ @comment.documentation
   (class))
@@ -251,6 +263,8 @@
  ","
  ";"
  "."
+ "&."
+ "::"
  ] @punctuation.delimiter
 
 [
