@@ -4,9 +4,10 @@
   "let"
   "panic"
   "todo"
-  "type"
   "use"
 ] @keyword
+
+"type" @keyword.type
 
 ; Function Keywords
 "fn" @keyword.function
@@ -146,9 +147,6 @@
   (type_parameter)
   (type_var)
 ] @type
-
-((type_identifier) @type.builtin
-  (#any-of? @type.builtin "Int" "Float" "String" "List"))
 
 ; Type Qualifiers
 [

@@ -21,7 +21,7 @@
     ; https://docs.python.org/3/library/constants.html
     "NotImplemented" "Ellipsis" "quit" "exit" "copyright" "credits" "license"))
 
-"_" @constant.builtin ; match wildcard
+"_" @character.special ; match wildcard
 
 ((attribute
   attribute: (identifier) @variable.member)
@@ -59,7 +59,7 @@
 ; Decorators
 ((decorator
   "@" @attribute)
-  (#set! "priority" 101))
+  (#set! priority 101))
 
 (decorator
   (identifier) @attribute)
@@ -204,41 +204,22 @@
   (comment)*
   .
   (expression_statement
-    (string) @string.documentation))
-
-(class_definition
-  body: (block
-    .
-    (expression_statement
-      (string) @string.documentation)))
-
-(function_definition
-  body: (block
-    .
-    (expression_statement
-      (string) @string.documentation)))
-
-(module
-  .
-  (comment)*
-  .
-  (expression_statement
     (string
-      (string_content) @spell)))
+      (string_content) @spell) @string.documentation))
 
 (class_definition
   body: (block
     .
     (expression_statement
       (string
-        (string_content) @spell))))
+        (string_content) @spell) @string.documentation)))
 
 (function_definition
   body: (block
     .
     (expression_statement
       (string
-        (string_content) @spell))))
+        (string_content) @spell) @string.documentation)))
 
 ; Tokens
 [
@@ -329,7 +310,7 @@
 
 (future_import_statement
   "from" @keyword.import
-  "__future__" @constant.builtin)
+  "__future__" @module.builtin)
 
 (import_from_statement
   "from" @keyword.import)
@@ -338,6 +319,28 @@
 
 (aliased_import
   "as" @keyword.import)
+
+(wildcard_import
+  "*" @character.special)
+
+(import_statement
+  name: (dotted_name
+    (identifier) @module))
+
+(import_statement
+  name: (aliased_import
+    name: (dotted_name
+      (identifier) @module)
+    alias: (identifier) @module))
+
+(import_from_statement
+  module_name: (dotted_name
+    (identifier) @module))
+
+(import_from_statement
+  module_name: (relative_import
+    (dotted_name
+      (identifier) @module)))
 
 [
   "if"

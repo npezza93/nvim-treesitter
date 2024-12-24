@@ -1,6 +1,6 @@
 [
   ; import …
-  (import_statement)+
+  (import)+
   ; (…, …)
   (parameter_list)
   (argument_list)
@@ -13,4 +13,6 @@
   (trait_body)
   (function_body)
   (block_statement)
+  (asm_function_body)
+  (asm_list)
 ] @fold

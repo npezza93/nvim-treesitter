@@ -59,6 +59,7 @@
   "^"
   "&&"
   "||"
+  "->"
 ] @operator
 
 ; constructor
@@ -76,7 +77,7 @@
 ; type.builtin
 ; ------------
 ((identifier) @type.builtin
-  (#eq? @type.builtin "SendParameters"))
+  (#any-of? @type.builtin "Context" "SendParameters" "StateInit" "StdAddress" "VarAddress"))
 
 (bounced_type
   "bounced" @type.builtin
@@ -93,10 +94,7 @@
 
 (tlb_serialization
   "as" @keyword
-  type: (identifier) @type.builtin
-  (#any-of? @type.builtin
-    "int8" "int16" "int32" "int64" "int128" "int256" "int257" "uint8" "uint16" "uint32" "uint64"
-    "uint128" "uint256" "coins" "remaining" "bytes32" "bytes64"))
+  type: (identifier) @type.builtin)
 
 ; string
 ; ------
@@ -108,7 +106,7 @@
 
 ; string.special.path
 ; -------------------
-(import_statement
+(import
   library: (string) @string.special.path)
 
 ; boolean
@@ -117,7 +115,10 @@
 
 ; constant
 ; --------
-(constant
+(global_constant
+  name: (identifier) @constant)
+
+(storage_constant
   name: (identifier) @constant)
 
 ; constant.builtin
@@ -127,30 +128,22 @@
 ((identifier) @constant.builtin
   (#any-of? @constant.builtin
     "SendBounceIfActionFail" "SendPayGasSeparately" "SendIgnoreErrors" "SendDestroyIfZero"
-    "SendRemainingValue" "SendRemainingBalance" "ReserveExact" "ReserveAllExcept" "ReserveAtMost"
-    "ReserveAddOriginalBalance" "ReserveInvertSign" "ReserveBounceIfActionFail"))
+    "SendRemainingValue" "SendRemainingBalance" "SendOnlyEstimateFee" "ReserveExact"
+    "ReserveAllExcept" "ReserveAtMost" "ReserveAddOriginalBalance" "ReserveInvertSign"
+    "ReserveBounceIfActionFail"))
 
 ; property
 ; --------
 (instance_argument
   name: (identifier) @variable.member)
 
-(lvalue
-  (_)
-  (_) @variable.member)
-
 (field_access_expression
   name: (identifier) @variable.member)
 
-(trait_body
-  (constant
-    name: (identifier) @variable.member))
-
-(contract_body
-  (constant
-    name: (identifier) @variable.member))
-
 (field
+  name: (identifier) @variable.member)
+
+(storage_variable
   name: (identifier) @variable.member)
 
 ; number
@@ -181,6 +174,7 @@
 [
   "fun"
   "native"
+  "asm"
 ] @keyword.function
 
 ; keyword.operator
@@ -248,7 +242,10 @@
 (native_function
   name: (identifier) @function)
 
-(static_function
+(asm_function
+  name: (identifier) @function)
+
+(global_function
   name: (identifier) @function)
 
 (func_identifier) @function
@@ -267,7 +264,7 @@
 (external_function
   "external" @function.method)
 
-(function
+(storage_function
   name: (identifier) @function.method)
 
 ; function.call
@@ -280,17 +277,12 @@
 (method_call_expression
   name: (identifier) @function.method.call)
 
-; function.builtin
-; ----------------
-(static_call_expression
-  name: (identifier) @function.builtin
-  (#any-of? @function.builtin
-    "log" "log2" "send" "sender" "require" "now" "myBalance" "myAddress" "newAddress"
-    "contractAddress" "contractAddressExt" "emit" "cell" "ton" "dump" "dumpStack" "beginString"
-    "beginComment" "beginTailString" "beginStringFromBuilder" "beginCell" "emptyCell" "randomInt"
-    "random" "checkSignature" "checkDataSignature" "sha256" "min" "max" "abs" "pow" "pow2" "throw"
-    "nativeThrowWhen" "nativeThrowUnless" "getConfigParam" "nativeRandomize" "nativeRandomizeLt"
-    "nativePrepareRandom" "nativeRandom" "nativeRandomInterval" "nativeReserve"))
+; attribute
+; ---------
+[
+  "@name"
+  "@interface"
+] @attribute
 
 ; comment
 ; -------
@@ -298,10 +290,3 @@
 
 ((comment) @comment.documentation
   (#lua-match? @comment.documentation "^/[*][*][^*].*[*]/$"))
-
-; attribute
-; ---------
-[
-  "@name"
-  "@interface"
-] @attribute
