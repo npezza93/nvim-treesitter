@@ -92,7 +92,7 @@
 
 (call . method: (identifier) @model_macro.ruby
  (#any-of? @model_macro.ruby
-    "belongs_to" "has_many" "has_one" "accepts_nested_attributes_for"
+    "belongs_to" "has_many" "has_one" "accepts_nested_attributes_for" "normalizes"
     "attr_readonly" "attribute" "enum" "serialize" "store" "store_accessor"
     "default_scope" "scope" "has_rich_text" "has_secure_password"
     "has_secure_token" "has_one_attached" "has_many_attached" "delegated_type"
